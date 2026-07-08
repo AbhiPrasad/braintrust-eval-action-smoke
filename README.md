@@ -6,7 +6,7 @@ It runs three smoke jobs:
 
 - `js-npm`: real Braintrust JS eval through `braintrust eval --jsonl`
 - `python-pip`: real Braintrust Python eval through `braintrust eval --jsonl`
-- `go-jsonl`: synthetic Go `go run .` program that emits a Braintrust-style experiment summary JSON line, which tests the action's Go runtime/parser/comment path
+- `go-jsonl`: real Braintrust Go SDK eval via `go run .`; it also emits a Braintrust-style experiment summary JSON line so the action can render the PR comment
 
 ## Create and push the smoke repo
 
@@ -63,6 +63,14 @@ You should see one Braintrust eval report comment per `step_key`:
 - `smoke-js-npm`
 - `smoke-python-pip`
 - `smoke-go-jsonl`
+
+## Braintrust projects
+
+The smoke evals write to these Braintrust projects:
+
+- JS: `Smoke JS Eval Action`
+- Python: `Smoke Python Eval Action`
+- Go: `Smoke Go Eval Action`
 
 ## Notes
 
