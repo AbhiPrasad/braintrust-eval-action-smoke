@@ -1,0 +1,127 @@
+name: eval-action smoke
+
+on:
+  workflow_dispatch:
+    inputs:
+      action_repository:
+        description: "GitHub repository containing eval-action"
+        required: true
+        default: "braintrustdata/eval-action"
+      action_ref:
+        description: "eval-action branch, tag, or SHA to test"
+        required: true
+        default: "main"
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  pull-requests: write
+
+# For push/pull_request runs, set repository variables if you do not want the
+# defaults below:
+#   EVAL_ACTION_REPOSITORY=braintrustdata/eval-action
+#   EVAL_ACTION_REF=<branch-or-sha-under-test>
+env:
+  EVAL_ACTION_REPOSITORY: ${{ github.event.inputs.action_repository || vars.EVAL_ACTION_REPOSITORY || 'braintrustdata/eval-action' }}
+  EVAL_ACTION_REF: ${{ github.event.inputs.action_ref || vars.EVAL_ACTION_REF || 'main' }}
+
+jobs:
+  js-npm:
+    name: JS / npm
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout smoke repo
+        uses: actions/checkout@v4
+
+      - name: Checkout eval-action under test
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.EVAL_ACTION_REPOSITORY }}
+          ref: ${{ env.EVAL_ACTION_REF }}
+          path: .github/actions/eval-action
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install JS dependencies
+        working-directory: js
+        run: npm install
+
+      - name: Run JS evals through eval-action
+        uses: ./.github/actions/eval-action
+        with:
+          api_key: ${{ secrets.BRAINTRUST_API_KEY }}
+          runtime: node
+          package_manager: npm
+          root: js
+          paths: smoke.eval.js
+          step_key: smoke-js-npm
+
+  python-pip:
+    name: Python / pip
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout smoke repo
+        uses: actions/checkout@v4
+
+      - name: Checkout eval-action under test
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.EVAL_ACTION_REPOSITORY }}
+          ref: ${{ env.EVAL_ACTION_REF }}
+          path: .github/actions/eval-action
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Python dependencies
+        working-directory: python
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run Python evals through eval-action
+        uses: ./.github/actions/eval-action
+        with:
+          api_key: ${{ secrets.BRAINTRUST_API_KEY }}
+          runtime: python
+          package_manager: pip
+          root: python
+          paths: smoke_eval.py
+          step_key: smoke-python-pip
+
+  go-jsonl:
+    name: Go / JSONL
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout smoke repo
+        uses: actions/checkout@v4
+
+      - name: Checkout eval-action under test
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.EVAL_ACTION_REPOSITORY }}
+          ref: ${{ env.EVAL_ACTION_REF }}
+          path: .github/actions/eval-action
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: stable
+          cache: false
+
+      - name: Run Go evals through eval-action
+        uses: ./.github/actions/eval-action
+        with:
+          api_key: ${{ secrets.BRAINTRUST_API_KEY }}
+          runtime: go
+          root: go
+          paths: .
+          step_key: smoke-go-jsonl

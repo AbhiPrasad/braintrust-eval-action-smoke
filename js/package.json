@@ -1,0 +1,12 @@
+{
+  "name": "braintrust-eval-action-smoke-js",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "eval": "braintrust eval smoke.eval.js"
+  },
+  "dependencies": {
+    "autoevals": "latest",
+    "braintrust": "latest"
+  }
+}
