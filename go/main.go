@@ -51,6 +51,7 @@ func main() {
 		Dataset: eval.NewDataset([]eval.Case[string, string]{
 			{Input: "Go", Expected: "Hello Go"},
 			{Input: "GitHub Actions", Expected: "Hello GitHub Actions"},
+			{Input: "Braintrust", Expected: "Hello Braintrust"},
 		}),
 		Task: eval.T(func(ctx context.Context, input string) (string, error) {
 			return "Hello " + input, nil
