@@ -7,7 +7,8 @@ Eval(
     data=lambda: [
         {"input": "Python", "expected": "Hello Python"},
         {"input": "GitHub Actions", "expected": "Hello GitHub Actions"},
-        {"input": "Braintrust", "expected": "Hello Braintrust"},
+        # Intentional mismatch to exercise eval-action regression reporting.
+        {"input": "Braintrust", "expected": "Goodbye Braintrust"},
     ],
     task=lambda input: f"Hello {input}",
     scores=[Levenshtein],

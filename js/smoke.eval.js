@@ -11,7 +11,8 @@ Eval("Smoke JS Eval Action", {
   data: () => [
     { input: "JS", expected: "Hello JS" },
     { input: "GitHub Actions", expected: "Hello GitHub Actions" },
-    { input: "Braintrust", expected: "Hello Braintrust" },
+    // Intentional mismatch to exercise eval-action regression reporting.
+    { input: "Braintrust", expected: "Goodbye Braintrust" },
   ],
   task: async input => `Hello ${input}`,
   scores: [exactMatch],

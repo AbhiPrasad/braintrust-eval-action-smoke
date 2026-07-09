@@ -51,7 +51,8 @@ func main() {
 		Dataset: eval.NewDataset([]eval.Case[string, string]{
 			{Input: "Go", Expected: "Hello Go"},
 			{Input: "GitHub Actions", Expected: "Hello GitHub Actions"},
-			{Input: "Braintrust", Expected: "Hello Braintrust"},
+			// Intentional mismatch to exercise eval-action regression reporting.
+			{Input: "Braintrust", Expected: "Goodbye Braintrust"},
 		}),
 		Task: eval.T(func(ctx context.Context, input string) (string, error) {
 			return "Hello " + input, nil
@@ -84,7 +85,7 @@ func main() {
 		ExperimentName: result.Name(),
 		ExperimentURL:  permalink,
 		Scores: map[string]scoreSummary{
-			"exact_match": {Score: 1, Improvements: 0, Regressions: 0},
+			"exact_match": {Score: 2.0 / 3.0, Improvements: 0, Regressions: 1},
 		},
 	}
 
